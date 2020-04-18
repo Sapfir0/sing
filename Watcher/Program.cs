@@ -9,14 +9,16 @@ namespace Watcher
 {
     class Watcher
     {
+        private FileSystemWatcher _watcher;
         public delegate void DirectoryHandler(string path);
         public event DirectoryHandler AddedFile;
         
         public void HandleDirectory(string path)
         {
-            using FileSystemWatcher watcher = new FileSystemWatcher {Path = path};
-            watcher.Created += OnAdded;
-            watcher.EnableRaisingEvents = true;
+            _watcher = new FileSystemWatcher {Path = path};
+
+            _watcher.Created += OnAdded;
+            _watcher.EnableRaisingEvents = true;
         }
         
         
@@ -32,6 +34,8 @@ namespace Watcher
         private Watcher _watcher;
         public Dispatcher(Watcher watcher, ISender sender)
         {
+            _sender = sender;
+            _watcher = watcher;
             _watcher.AddedFile += SendFile;
         }
 
@@ -41,6 +45,7 @@ namespace Watcher
             _sender.send(bytes);
         }
     }
+    
     
     class Program
     {
@@ -55,9 +60,12 @@ namespace Watcher
             
             Console.WriteLine("Детектим изменения в " + path);
             
-            Watcher.HandleDirectory(path);
-            
-            while (Console.Read() != 'q');
+            var watcher = new Watcher();
+            watcher.HandleDirectory(path);
+            var dispatcher = new Dispatcher(watcher, new RabbitSender(new Config()));
+
+
+            while (Console.Read() != 'q') ;
         }
     }
 }

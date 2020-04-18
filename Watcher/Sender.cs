@@ -2,6 +2,6 @@
 {
     public interface ISender
     {
-        bool send(byte[] data);
+        void send(byte[] data);
     }
 }

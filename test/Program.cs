@@ -2,11 +2,18 @@
 
 namespace test
 {
+    public class Config
+    {
+        public string _routingKey = "test";
+        public string _exchangeName = "test";
+        public string _queueName = "test";
+    }
+
     class Program
     {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello World!");
+        public static void Main() {
+    
         }
     }
+
 }
