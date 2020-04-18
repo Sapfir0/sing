@@ -1,11 +1,11 @@
 ﻿using System.Text;
 using RabbitMQ.Client;
 
-namespace test
+namespace Watcher
 {
-    public class RabbitSender : Sender
+    public class RabbitSender : ISender
     {
-        private static IConnection GetRabbitConnection()
+        private IConnection GetRabbitConnection()
         {
             ConnectionFactory factory = new ConnectionFactory
             {
@@ -17,7 +17,7 @@ namespace test
             IConnection conn = factory.CreateConnection();
             return conn;
         }
-        private static IModel GetRabbitChannel(string exchangeName, string queueName, string routingKey)
+        private IModel GetRabbitChannel(string exchangeName, string queueName, string routingKey)
         {
             var conn = GetRabbitConnection();
             var model = conn.CreateModel();
@@ -27,11 +27,16 @@ namespace test
             return model;
         }
         
-        public static void SendMessage(string exchangeName="test", string queueName="test", string routingKey="test")
+        public void SendMessage(string exchangeName="test", string queueName="test", string routingKey="test")
         {
             IModel model = GetRabbitChannel(exchangeName, queueName, routingKey);
             byte[] messageBodyBytes = Encoding.UTF8.GetBytes("Hello, world!");
             model.BasicPublish(exchangeName, routingKey, null, messageBodyBytes);
+        }
+
+        public bool send(byte[] data)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

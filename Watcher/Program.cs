@@ -9,35 +9,39 @@ namespace Watcher
 {
     class Watcher
     {
-        public static void HandleDirectory(string path)
+        public delegate void DirectoryHandler(string path);
+        public event DirectoryHandler AddedFile;
+        
+        public void HandleDirectory(string path)
         {
             using FileSystemWatcher watcher = new FileSystemWatcher {Path = path};
-            watcher.Created += OnChanged;
+            watcher.Created += OnAdded;
             watcher.EnableRaisingEvents = true;
-            
-            while(true);
         }
-        private static void OnChanged(object source, FileSystemEventArgs e)
+        
+        
+        private void OnAdded(object source, FileSystemEventArgs e)
         {           
-            Console.WriteLine($"File: {e.FullPath} {e.ChangeType}");
-            
+            AddedFile?.Invoke(e.FullPath);
         }
     }
 
     class Dispatcher
     {
-        
-    }
-    class ImageSender
-    {
-        private Sender _sender;
-        public ImageSender(Sender sender)
+        private ISender _sender;
+        private Watcher _watcher;
+        public Dispatcher(Watcher watcher, ISender sender)
         {
-            _sender = sender;
+            _watcher.AddedFile += SendFile;
         }
-        
 
+        public void SendFile(string path)
+        {
+            var bytes = File.ReadAllBytes(path); 
+            _sender.send(bytes);
+        }
     }
+    
     class Program
     {
         static void Main(string[] args)
@@ -50,9 +54,10 @@ namespace Watcher
             }
             
             Console.WriteLine("Детектим изменения в " + path);
-
+            
             Watcher.HandleDirectory(path);
-
+            
+            while (Console.Read() != 'q');
         }
     }
 }
