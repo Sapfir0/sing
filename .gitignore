@@ -1,0 +1,9 @@
+﻿.idea
+
+obj/Debug
+bin/
+obj/
+packages/
+.vs
+Assemblies/
+node_modules
