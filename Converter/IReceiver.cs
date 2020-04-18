@@ -1,6 +1,6 @@
 ﻿namespace Converter
 {
-    public interface IRecievier
+    public interface IReceiver
     {
         
     }
