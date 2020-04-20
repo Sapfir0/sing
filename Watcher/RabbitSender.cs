@@ -17,7 +17,6 @@ namespace Watcher
         {
             Console.WriteLine("Изображение отправлено");
             _bus.Publish<File>(data);
-
         }
 
         public void Dispose()
