@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Permissions;
 using System.Text;
-using test;
 
 namespace Watcher
 {
-    class Watcher
+    class Watcher : IDisposable
     {
         private FileSystemWatcher _watcher;
         public delegate void DirectoryHandler(string path);
@@ -26,6 +25,11 @@ namespace Watcher
         {           
             AddedFile?.Invoke(e.FullPath);
         }
+
+        public void Dispose()
+        {
+            _watcher.Dispose();
+        }
     }
 
     class Dispatcher
@@ -41,9 +45,17 @@ namespace Watcher
 
         public void SendFile(string path)
         {
-            var bytes = File.ReadAllBytes(path); 
+            // var bytes = File.ReadAllBytes(path); 
+            var bytes = new byte[] {0, 0, 1};
             _sender.send(bytes);
         }
+    }
+
+
+    public class File
+    {
+        public string name { get; set; }
+        public byte[] data { get; set; }
     }
     
     
@@ -61,8 +73,9 @@ namespace Watcher
             Console.WriteLine("Детектим изменения в " + path);
             
             var watcher = new Watcher();
+            using var sender = new RabbitSender();
             watcher.HandleDirectory(path);
-            var dispatcher = new Dispatcher(watcher, new RabbitSender());
+            var dispatcher = new Dispatcher(watcher, sender);
 
 
             while (Console.Read() != 'q') ;

@@ -1,29 +1,30 @@
 ﻿using System;
 using System.Text;
-using RabbitMQ.Client;
 using test;
 using EasyNetQ;
 using EasyNetQ.Producer;
 
 namespace Watcher
 {
-    public class RabbitSender : ISender
+    public class RabbitSender : ISender, IDisposable
     {
         private IBus _bus;
         
         public RabbitSender()
         {
-            _bus = GetRabbitConnection();
-        }
-        private IBus GetRabbitConnection()
-        {
-            return RabbitHutch.CreateBus("host=localhost");
+            _bus = RabbitHutch.CreateBus("host=localhost");
         }
 
         public void send(byte[] data)
         {
-            ((IPubSub) _bus).Publish(data);
             Console.WriteLine("Изображение отправлено");
+            _bus.Publish<byte[]>(data);
+
+        }
+
+        public void Dispose()
+        {
+            _bus.Dispose();
         }
     }
 }

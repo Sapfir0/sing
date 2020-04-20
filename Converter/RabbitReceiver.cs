@@ -1,29 +1,34 @@
 ﻿using System;
 using System.Text;
-using RabbitMQ.Client;
 using EasyNetQ;
-using EasyNetQ.Producer;
 
 namespace Converter
 {
-    public class RabbitReceiver
+    public class RabbitReceiver : IDisposable
     {
         private IBus _bus;
         public RabbitReceiver()
         {
             _bus = GetRabbitConnection();
-            ((IPubSub)_bus).Subscribe<byte[]>("id", msg => Console.WriteLine("а че тут писать"));
+            _bus.Subscribe<byte[]>("id", ReceiveMessage);
         }
-        
+       
         private IBus GetRabbitConnection()
         {
             return RabbitHutch.CreateBus("host=localhost");
         }
-        
-        private void ReceiveMessage()
-        {
 
-        }
+        public delegate void NewMessageHandler(byte[] data);
+        public event NewMessageHandler NewMessage;
         
+        private void ReceiveMessage(byte[] data)
+        {
+            NewMessage?.Invoke(data);
+        }
+
+        public void Dispose()
+        {
+            _bus.Dispose();
+        }
     }
 }

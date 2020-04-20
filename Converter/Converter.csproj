@@ -10,8 +10,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="EasyNetQ" Version="4.1.0-alpha0004" />
-      <PackageReference Include="RabbitMQ.Client" Version="6.0.0" />
+      <PackageReference Include="EasyNetQ" Version="4.0.0" />
+      <PackageReference Include="ImageProcessor" Version="2.9.0" />
     </ItemGroup>
 
 </Project>
