@@ -7,6 +7,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\test\test.csproj" />
+      <ProjectReference Include="..\Watcher\Watcher.csproj" />
     </ItemGroup>
 
     <ItemGroup>

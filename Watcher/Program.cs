@@ -3,9 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Permissions;
 using System.Text;
+using System.Threading;
 
 namespace Watcher
 {
+    
+    public class File
+    {
+        public string name { get; set; }
+        public byte[] data { get; set; }
+    }
     class Watcher : IDisposable
     {
         private FileSystemWatcher _watcher;
@@ -23,7 +30,14 @@ namespace Watcher
         
         private void OnAdded(object source, FileSystemEventArgs e)
         {           
-            AddedFile?.Invoke(e.FullPath);
+            try
+            {
+                AddedFile?.Invoke(e.FullPath);
+            }
+            catch (IOException)
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(100));
+            }
         }
 
         public void Dispose()
@@ -45,9 +59,12 @@ namespace Watcher
 
         public void SendFile(string path)
         {
-            // var bytes = File.ReadAllBytes(path); 
-            var bytes = new byte[] {0, 0, 1};
-            _sender.send(bytes);
+            var bytes = System.IO.File.ReadAllBytes(path); 
+            _sender.send(new File()
+            {
+                data = bytes,
+                name = Path.GetFileName(path)
+            });
         }
     }
 
@@ -71,7 +88,7 @@ namespace Watcher
             watcher.HandleDirectory(path);
             var dispatcher = new Dispatcher(watcher, sender);
 
-
+            Console.WriteLine("Press q for quit"); // Engfish, bro 
             while (Console.Read() != 'q') ;
         }
     }

@@ -6,64 +6,87 @@ using System.Reflection.Metadata;
 using GroupDocs.Watermark;
 using GroupDocs.Watermark.Common;
 using GroupDocs.Watermark.Watermarks;
+using Watcher;
+using File = Watcher.File;
 
 namespace Converter
 {
 
     public interface IByteConverter
     {
-        /*byte[] Convert(byte[] imageBytes)
-        {
-
-        }*/
+        void Convert(byte[] bytes, Stream outputStream);
     }
 
-    public class WatermarkOverlay
+    public class WatermarkOverlay : IByteConverter
     {
-        public static GroupDocs.Watermark.Watermarker PutWatermark(File image)
+// файл умер
+
+        public void Convert(byte[] bytes, Stream outputStream)
         {
-            using var stream = System.IO.File.Open(image.name, FileMode.Open, FileAccess.ReadWrite);
-            using var watermarker = new Watermarker(stream);
-            using (var watermark = new ImageWatermark("./logo.png"))
+            using (MemoryStream stream = new MemoryStream(bytes))
             {
-                watermark.HorizontalAlignment = HorizontalAlignment.Right;
-                watermark.VerticalAlignment = VerticalAlignment.Bottom;
-                watermarker.Add(watermark);
+                var watermarker = new Watermarker(stream);
+                
+                Console.WriteLine(Directory.GetCurrentDirectory());
+                using (var watermark = new ImageWatermark("./logo.png"))
+                {
+                    watermark.HorizontalAlignment = HorizontalAlignment.Right;
+                    watermark.VerticalAlignment = VerticalAlignment.Bottom;
+                    watermarker.Add(watermark);
+                } // он в файловой системе сохранит
+                watermarker.Save(outputStream);
             }
 
-            return watermarker;
-            
         }
-
     }
 
-    public class Getter
+    public class FileDispatcher
     {
-        public static void GetMessage(byte[] image)
+
+        private IByteConverter _converter;
+        private string _directory;
+        public FileDispatcher(IByteConverter converter, string saveDirectory)
         {
-            Console.WriteLine("Изображение получено");
-            var imageInstance = new File() {data = image};
-            var watermarked = WatermarkOverlay.PutWatermark(imageInstance);
-            watermarked.Save( Path.Combine("outcoming", imageInstance.name));
+            _converter = converter;
+            _directory = saveDirectory;
+        }
+        
+        public void TransformFile(File image)
+        {
+            Console.WriteLine($"Изображение получено {image.data.Length}");
+            var newFilePath = Path.Combine(_directory, image.name);
+            
+            using (var file = System.IO.File.Open(newFilePath, System.IO.FileMode.Create))
+            {
+                _converter.Convert(image.data, file);
+                file.Close();
+            }
+// и
+            Console.WriteLine("Изображение сохранено в " + newFilePath);
+            
 
         }
     }
-    
-    
-    public class File
-    {
-        public string name { get; set; }
-        public byte[] data { get; set; }
-    }
 
-    
+
     class Program
     {
        
         static void Main(string[] args)
         {
+            const string subpath = "outcoming";
+            var path = Path.Combine(Directory.GetCurrentDirectory(), subpath);
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), "outcoming");
             using var receiver = new RabbitReceiver();
-            receiver.NewMessage += msg => Getter.GetMessage(msg);
+            var fileDispatcher = new FileDispatcher(new WatermarkOverlay(), pathToSave);
+            receiver.NewFileReceived += fileDispatcher.TransformFile;
+            
+            Console.WriteLine("Press q to quit");
             while (Console.Read() != 'q') ;
             
         }

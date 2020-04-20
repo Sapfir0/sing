@@ -1,29 +1,28 @@
 ﻿using System;
 using System.Text;
 using EasyNetQ;
+using Watcher;
 
 namespace Converter
 {
-    public class RabbitReceiver : IDisposable
+    public class RabbitReceiver : IDisposable, IReceiver
     {
         private IBus _bus;
+        public event IReceiver.NewFileHandler NewFileReceived;
         public RabbitReceiver()
         {
             _bus = GetRabbitConnection();
-            _bus.Subscribe<byte[]>("id", ReceiveMessage);
+            _bus.Subscribe<File>("id", ReceiveMessage);
         }
        
         private IBus GetRabbitConnection()
         {
             return RabbitHutch.CreateBus("host=localhost");
-        }
+        } //ща придумаю
 
-        public delegate void NewMessageHandler(byte[] data);
-        public event NewMessageHandler NewMessage;
-        
-        private void ReceiveMessage(byte[] data)
+        private void ReceiveMessage(File data)
         {
-            NewMessage?.Invoke(data);
+            NewFileReceived?.Invoke(data);
         }
 
         public void Dispose()

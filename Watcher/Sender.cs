@@ -2,6 +2,6 @@
 {
     public interface ISender
     {
-        void send(byte[] data);
+        void send(File data);
     }
 }

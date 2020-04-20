@@ -15,10 +15,10 @@ namespace Watcher
             _bus = RabbitHutch.CreateBus("host=localhost");
         }
 
-        public void send(byte[] data)
+        public void send(File data)
         {
             Console.WriteLine("Изображение отправлено");
-            _bus.Publish<byte[]>(data);
+            _bus.Publish<File>(data);
 
         }
 
