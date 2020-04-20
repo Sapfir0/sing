@@ -26,18 +26,24 @@ namespace Watcher
             _watcher.Created += OnAdded;
             _watcher.EnableRaisingEvents = true;
         }
-        
-        
+
+
         private void OnAdded(object source, FileSystemEventArgs e)
-        {           
-            try
+        {
+            var stop = false;
+            while (!stop)
             {
-                AddedFile?.Invoke(e.FullPath);
+                try
+                {
+                    using var file = System.IO.File.OpenRead(e.FullPath);
+                    stop = true;
+                }
+                catch (IOException)
+                {
+                    stop = false;
+                }
             }
-            catch (IOException)
-            {
-                Thread.Sleep(TimeSpan.FromMilliseconds(100));
-            }
+            AddedFile?.Invoke(e.FullPath);
         }
 
         public void Dispose()

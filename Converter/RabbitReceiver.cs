@@ -18,7 +18,7 @@ namespace Converter
         private IBus GetRabbitConnection()
         {
             return RabbitHutch.CreateBus("host=localhost");
-        } //ща придумаю
+        } 
 
         private void ReceiveMessage(File data)
         {

@@ -34,7 +34,9 @@ namespace Converter
                     watermark.VerticalAlignment = VerticalAlignment.Bottom;
                     watermarker.Add(watermark);
                 } // он в файловой системе сохранит
+
                 watermarker.Save(outputStream);
+                Console.WriteLine($"Изображение получено {outputStream.Length}");
             }
 
         }
@@ -56,15 +58,13 @@ namespace Converter
             Console.WriteLine($"Изображение получено {image.data.Length}");
             var newFilePath = Path.Combine(_directory, image.name);
             
-            using (var file = System.IO.File.Open(newFilePath, System.IO.FileMode.Create))
+            using (var file = System.IO.File.OpenWrite(newFilePath))
             {
                 _converter.Convert(image.data, file);
                 file.Close();
             }
-// и
-            Console.WriteLine("Изображение сохранено в " + newFilePath);
             
-
+            Console.WriteLine("Изображение сохранено в " + newFilePath);
         }
     }
 
@@ -85,6 +85,11 @@ namespace Converter
             using var receiver = new RabbitReceiver();
             var fileDispatcher = new FileDispatcher(new WatermarkOverlay(), pathToSave);
             receiver.NewFileReceived += fileDispatcher.TransformFile;
+            /*var img1 = Path.Combine(pathToSave, "capture.PNG");
+            var file = System.IO.File.ReadAllBytes(img1);
+            var fileOut = System.IO.File.OpenWrite(img1+"p");
+            var convert = new WatermarkOverlay();
+            convert.Convert(file, fileOut);*/
             
             Console.WriteLine("Press q to quit");
             while (Console.Read() != 'q') ;
