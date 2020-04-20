@@ -2,7 +2,7 @@
 
 namespace Converter
 {
-    public interface IByteConverter
+    public interface IStreamConverter
     {
         void Convert(Stream inputStream, Stream outputStream);
     }

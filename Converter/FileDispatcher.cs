@@ -7,9 +7,9 @@ namespace Converter
     public class FileDispatcher
     {
 
-        private IByteConverter _converter;
+        private IStreamConverter _converter;
         private string _directory;
-        public FileDispatcher(IByteConverter converter, string saveDirectory)
+        public FileDispatcher(IStreamConverter converter, string saveDirectory)
         {
             _converter = converter;
             _directory = saveDirectory;

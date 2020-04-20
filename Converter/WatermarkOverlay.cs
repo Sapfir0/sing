@@ -6,7 +6,7 @@ using GroupDocs.Watermark.Watermarks;
 
 namespace Converter
 {
-    public class WatermarkOverlay : IByteConverter
+    public class WatermarkOverlay : IStreamConverter
     {
         public void Convert(Stream inputStream, Stream outputStream)
         {
