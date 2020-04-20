@@ -4,6 +4,6 @@ namespace Converter
 {
     public interface IByteConverter
     {
-        void Convert(byte[] bytes, Stream outputStream);
+        void Convert(Stream inputStream, Stream outputStream);
     }
 }

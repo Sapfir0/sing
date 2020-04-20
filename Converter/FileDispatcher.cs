@@ -22,7 +22,7 @@ namespace Converter
             
             using (var file = System.IO.File.OpenWrite(newFilePath))
             {
-                _converter.Convert(image.data, file);
+                _converter.Convert(new MemoryStream(image.data), file);
                 file.Close();
             }
             
