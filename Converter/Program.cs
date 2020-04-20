@@ -18,7 +18,7 @@ namespace Converter
 
         static void Main(string[] args)
         {
-            
+            while (Console.Read() != 'q') ;
             Console.WriteLine("Hello World!");
         }
     }

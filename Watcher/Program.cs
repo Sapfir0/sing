@@ -62,7 +62,7 @@ namespace Watcher
             
             var watcher = new Watcher();
             watcher.HandleDirectory(path);
-            var dispatcher = new Dispatcher(watcher, new RabbitSender(new Config()));
+            var dispatcher = new Dispatcher(watcher, new RabbitSender());
 
 
             while (Console.Read() != 'q') ;

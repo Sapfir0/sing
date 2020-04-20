@@ -8,11 +8,11 @@ namespace Converter
 {
     public class RabbitReceiver
     {
+        private IBus _bus;
         public RabbitReceiver()
         {
-            
-            var bus = GetRabbitConnection();
-            ((IPubSub)bus).Subscribe<byte[]>("test", msg => Console.WriteLine("а че тут писать"));
+            _bus = GetRabbitConnection();
+            ((IPubSub)_bus).Subscribe<byte[]>("id", msg => Console.WriteLine("а че тут писать"));
         }
         
         private IBus GetRabbitConnection()

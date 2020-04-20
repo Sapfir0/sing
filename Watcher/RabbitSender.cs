@@ -3,6 +3,7 @@ using System.Text;
 using RabbitMQ.Client;
 using test;
 using EasyNetQ;
+using EasyNetQ.Producer;
 
 namespace Watcher
 {
@@ -10,9 +11,9 @@ namespace Watcher
     {
         private IBus _bus;
         
-        public RabbitSender(Config config)
+        public RabbitSender()
         {
-            
+            _bus = GetRabbitConnection();
         }
         private IBus GetRabbitConnection()
         {
@@ -21,7 +22,8 @@ namespace Watcher
 
         public void send(byte[] data)
         {
-            _bus.Publish(data);
+            ((IPubSub) _bus).Publish(data);
+            Console.WriteLine("Изображение отправлено");
         }
     }
 }
