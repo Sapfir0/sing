@@ -1,12 +1,8 @@
 ﻿using System;
 using System.IO;
-
-using System.Drawing;
-using System.Reflection.Metadata;
 using GroupDocs.Watermark;
 using GroupDocs.Watermark.Common;
 using GroupDocs.Watermark.Watermarks;
-using Watcher;
 using File = Watcher.File;
 
 namespace Converter
@@ -33,7 +29,7 @@ namespace Converter
                     watermark.HorizontalAlignment = HorizontalAlignment.Right;
                     watermark.VerticalAlignment = VerticalAlignment.Bottom;
                     watermarker.Add(watermark);
-                } // он в файловой системе сохранит
+                } 
 
                 watermarker.Save(outputStream);
                 Console.WriteLine($"Изображение получено {outputStream.Length}");
@@ -85,12 +81,7 @@ namespace Converter
             using var receiver = new RabbitReceiver();
             var fileDispatcher = new FileDispatcher(new WatermarkOverlay(), pathToSave);
             receiver.NewFileReceived += fileDispatcher.TransformFile;
-            /*var img1 = Path.Combine(pathToSave, "capture.PNG");
-            var file = System.IO.File.ReadAllBytes(img1);
-            var fileOut = System.IO.File.OpenWrite(img1+"p");
-            var convert = new WatermarkOverlay();
-            convert.Convert(file, fileOut);*/
-            
+
             Console.WriteLine("Press q to quit");
             while (Console.Read() != 'q') ;
             

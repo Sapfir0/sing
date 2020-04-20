@@ -13,8 +13,6 @@
     <ItemGroup>
       <PackageReference Include="EasyNetQ" Version="4.0.0" />
       <PackageReference Include="GroupDocs.Watermark" Version="20.2.0" />
-      <PackageReference Include="ImageProcessor" Version="2.9.0" />
-      <PackageReference Include="SkiaSharp" Version="1.68.2-preview.60" />
     </ItemGroup>
 
 </Project>

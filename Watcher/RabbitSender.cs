@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Text;
-using test;
 using EasyNetQ;
-using EasyNetQ.Producer;
+
 
 namespace Watcher
 {

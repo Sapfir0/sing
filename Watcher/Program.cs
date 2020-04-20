@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Security.Permissions;
-using System.Text;
-using System.Threading;
 
 namespace Watcher
 {
