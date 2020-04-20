@@ -67,6 +67,8 @@ namespace Watcher
                 data = bytes,
                 name = Path.GetFileName(path)
             });
+            System.IO.File.Delete(path);
+
         }
     }
 

@@ -15,8 +15,6 @@ namespace Converter
 
     public class WatermarkOverlay : IByteConverter
     {
-// файл умер
-
         public void Convert(byte[] bytes, Stream outputStream)
         {
             using (MemoryStream stream = new MemoryStream(bytes))
